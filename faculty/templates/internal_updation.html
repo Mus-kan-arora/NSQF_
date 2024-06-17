@@ -1,0 +1,623 @@
+  <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Data Table</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- <script>
+        $(document).ready(function () {
+
+            function updateStatusColumn(internal_table) {
+                $(`#${internal_table} tbody tr`).each(function () {
+                    var totalInternal = parseFloat($(this).find('input[name="total_internal"]').val());
+                    var status = totalInternal > 15 ? 'Pass' : 'Fail';
+                    $(this).find('.status-column').text(status);
+                });
+            }
+            function updateStatusColumn(practical_table) {
+                $(`#${practical_table} tbody tr`).each(function () {
+                    var practicalMarks = parseFloat($(this).find('input[name="practical"]').val());
+                    var status = practicalMarks > 30 ? 'Pass' : 'Fail';
+                    $(this).find('.status-column-practical').text(status);
+                });
+            }
+             function updateStatusColumn(assignment_table) {
+                $(`#${assignment_table} tbody tr`).each(function () {
+                    var AssignmentMarks = parseFloat($(this).find('input[name="assignment"]').val());
+                    var status = AssignmentMarks > 10 ? 'Pass' : 'Fail';
+                    $(this).find('.status-column-Assignment').text(status);
+                });
+            }
+            // Update status column for all tables
+            updateStatusColumn('internal_table');
+            updateStatusColumn('practical_table');
+            updateStatusColumn('assignment_table');
+
+            // Function to handle edit button click
+            $('.edit-button').click(function () {
+                var row = $(this).closest('tr');
+                row.find('.editable').prop('readonly', false).addClass('editing');
+                row.find('.save-button').show();
+                row.find('.edit-button').hide();
+            });
+
+            // Function to handle save button click
+            $('.save-button').click(function () {
+                var row = $(this).closest('tr');
+                var internal1 = parseFloat(row.find('.field1').val()) || 0;
+                var internal2 = parseFloat(row.find('.field2').val()) || 0;
+                var total_internal = internal1 + internal2;
+                // var practical = parseFloat(row.find('.field4').val()) || 0;
+
+                row.find('.field3').val(total_internal);
+                var data = {
+                    'internal1': row.find('.field1').val(),
+                    'internal2': row.find('.field2').val(),
+                    'total_internal': row.find('.field3').val(),
+                    // 'practical': row.find('.field4').val(),
+                    'id': row.find('input[name="id"]').val()  // Adding the primary key
+                };
+
+                // AJAX request to save the edited data
+                $.ajax({
+                    type: 'POST',
+                    url: '/faculty_save/', // Update URL endpoint if necessary
+                    data: data,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        if (response.success) {
+                            alert('Data saved successfully');
+                            row.find('.editable').prop('readonly', true).removeClass('editing');
+                            row.find('.save-button').hide();
+                            row.find('.edit-button').show();
+                            updateStatusColumn('internal_table'); // Update status after saving data
+                            // updateStatusColumn('practical_table'); // Update status after saving data
+                        } else {
+                            alert('Error occurred while saving data');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        console.error(error);
+                    }
+                });
+            });
+
+            // Function to handle edit button click for assignment table
+            $('.edit-button-assignment').click(function () {
+                var row = $(this).closest('tr');
+                row.find('.editable_assignment').prop('readonly', false).addClass('editing');
+                row.find('.save-button-assignment').show();
+                row.find('.edit-button-assignment').hide();
+            });
+
+            // Function to handle save button click for assignment table
+            $('.save-button-assignment').click(function () {
+                var row = $(this).closest('tr');
+                var assignmentMarks = parseFloat(row.find('.field-assignment').val()) || 0;
+
+                var data = {
+                    'assignment': assignmentMarks,
+                    'id': row.find('input[name="id"]').val()  // Adding the primary key
+                };
+
+                // AJAX request to save the edited data
+                $.ajax({
+                    type: 'POST',
+                    url: '/faculty_save_assignment/', // Update URL endpoint if necessary
+                    data: data,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        if (response.success) {
+                            alert('Data saved successfully');
+                            row.find('.editable-assignment').prop('readonly', true).removeClass('editing');
+                            row.find('.save-button-assignment').hide();
+                            row.find('.edit-button-assignment').show();
+                            updateStatusColumn('assignment_table'); // Update status after saving data
+                        } else {
+                            alert('Error occurred while saving data');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        console.error(error);
+                    }
+                });
+            });
+
+
+             // Function to handle edit button click for practical table
+            $('.edit-button-practical').click(function () {
+                var row = $(this).closest('tr');
+                row.find('.editable_practical').prop('readonly', false).addClass('editing');
+                row.find('.save-button-practical').show();
+                row.find('.edit-button-practical').hide();
+            });
+
+            // Function to handle save button click for practical table
+            $('.save-button-practical').click(function () {
+                var row = $(this).closest('tr');
+                var practicalMarks = parseFloat(row.find('.field-practical').val()) || 0;
+
+                var data = {
+                    'practical': practicalMarks,
+                    'id': row.find('input[name="id"]').val()  // Adding the primary key
+                };
+
+                // AJAX request to save the edited data
+                $.ajax({
+                    type: 'POST',
+                    url: '/faculty_save_practical/', // Update URL endpoint if necessary
+                    data: data,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        if (response.success) {
+                            alert('Data saved successfully');
+                            row.find('.editable-practical').prop('readonly', true).removeClass('editing');
+                            row.find('.save-button-practical').hide();
+                            row.find('.edit-button-practical').show();
+                            updateStatusColumn('practical_table'); // Update status after saving data
+                        } else {
+                            alert('Error occurred while saving data');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        console.error(error);
+                    }
+                });
+            });
+
+        });
+    </script> -->
+
+   <!--  <style>
+        body {
+               font-family: Arial, sans-serif;
+            /*display: flex;*/
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            /*font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;*/
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Search form styles */
+        .table-container {
+            overflow-x: hidden;
+            /* Hide horizontal scroll bar */
+            overflow-y: auto;
+            /* Show vertical scroll bar if needed */
+            border: 1px solid #ddd;
+            /* Add border for better visualization */
+            border-radius: 5px;
+            /* Add border radius for better appearance */
+        }
+
+        /* Table styles */
+        table {
+            overflow: hidden;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            table-layout: fixed;
+            /* Ensure fixed layout to prevent cell overflow */
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            word-wrap: break-word;
+            /* Wrap long words to prevent overflow */
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Editable fields styles */
+        .editable {
+            border: 1px solid #ddd;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .editable.editing {
+            border: 1px solid #87CEEB;
+            background-color: #f0f8ff;
+            /* Light blue */
+        }
+
+        /* Edit and Save button styles */
+        .edit-button,
+        .save-button {
+            padding: 6px 10px;
+            border-radius: 3px;
+            background-color: #87CEEB;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .save-button {
+            background-color: #28a745;
+            /* Green */
+        }
+
+        .edit-button:hover {
+            background-color: #0056b3;
+        }
+
+        .save-button:hover {
+            background-color: #218838;
+            /* Dark green */
+        }
+
+        .imgcontainer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .NeilitHeader {
+            width: 100%;
+            /* Adjust the width as needed */
+            height: auto;
+            display: inline-block;
+            /* Align image horizontally */
+            border-radius: 20px;
+            /* Optional: add border radius for a circular image */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            /* Optional: add a shadow effect */
+        }
+
+        table+table {
+            margin-top: 20px;
+            /* Adjust margin as needed */
+        }
+
+
+        .page-header {
+            background-color: #87CEEB;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-form {
+            margin-right: 20px;
+        }
+
+        .search-form input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            width: 250px;
+        }
+
+        .search-form button,
+        .export-btn button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .search-form button:hover,
+        .export-btn button:hover {
+            background-color: #218838;
+        }
+           .button-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 14px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+   /*     .data-table {
+    display: none;
+}*/
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .batch-selection {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .merge{
+            display: flex;
+        }
+         .dropdown-container {
+            margin: 20px;
+        }
+
+        .dropdown {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+    </style> -->
+
+</head>
+
+<body>
+    {% load static %}
+    <div class="page-header">
+        <a class="header-title" href="{% url 'admin_home'%}">Go to Dashboard</a>
+        <div class="header-actions">
+            <div class="search-form">
+                <form action="{% url 'display_data' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="q" placeholder="Search by Roll Number or Candidate Name">
+                    <button type="submit">Search Here</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <h2>{{this_course}}</h2>
+    <!-- <p>Data: {{ data }}</p> -->
+       <!-- <h1>Update Internal Marks</h1> -->
+<!-- <div class="merge">
+    <div class="batch-selection">
+     <form method="Get">
+        {% csrf_token %}
+        <label for="batch">Select Batch:</label>
+        <select name="batch" id="batch">
+            {% for batch in batches %}
+                <option value="{{ batch }}">{{ batch }}</option>
+            {% endfor %}
+        </select>
+         <div class="dropdown-container">
+        <select name="option" class="dropdown">
+            <option value="">Select Section</option>
+            <option value="practical_table">Practical</option>
+            <option value="internal_table">Internal</option>
+            <option value="assignment_table">Assignment/Project</option>
+        </select>
+    </div>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+      </div> -->
+
+    <h1>{{this_course}}</h1>
+
+
+
+        <form method="POST" action="{% url 'internal_ass' %}">
+        {% csrf_token %}
+        <table id="internal_table" class="data-table" style="font-size: smaller; overflow-wrap: break-word; width: 96%; margin: 1px auto; white-space: wrap;">
+            <thead>
+                <tr>
+                    <th style="width:3%;">SI. No.</th>
+                    <th style="width:10%;">Roll Number</th>
+                    <th style="width:5%;">Registration Number</th>
+                    <th style="width:8%;">Name of the Candidate</th>
+                    <th style="width:5%;">Date of Exam</th>
+                    <th>Internal Assessment 1</th>
+                    <th>Internal Assessment 2</th>
+                    <th>Total Internal</th>
+                    <!-- <th>Status</th> -->
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.Roll_No }}</td>
+                    <td>{{ item.Registration_number }}</td>
+                    <td>{{ item.Name_of_the_Candidate }}</td>
+                    <td>{{ item.Date_of_Exam }}</td>
+                    <td><input type="text" name="internal1_{{ item.id }}" value="0"></td>
+                    <td><input type="text" name="internal2_{{ item.id }}" value="0"></td>
+                    <td><input type="text" name="total_internal_{{ item.id }}" value="0"></td>
+                    <td class="status-column"></td>
+                    <td>
+                        <!-- No individual submit button needed here -->
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10">No data available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Submit</button>
+    </form>
+   <!--  <table id="internal_table" class="data-table" style="font-size: smaller; overflow-wrap: break-word; width: 96%; margin: 1px auto;white-space:wrap">
+        <thead>
+            <tr>
+                <th style="width:3%;">SI. No.</th>
+
+                <th style="width:10%;">Roll Number</th>
+
+                <th style="width:5%;">Registration Number</th>
+                <th style="width:8%;">Name of the Candidate</th>
+                <th style="width:5%;">Date of Exam</th>
+
+                <th>Internal Assessment 1</th>
+                <th>Internal Assessment 2</th>
+
+                <th>Total Internal</th>
+                <th>status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr>
+
+                <input type="hidden" name="id" value="{{item.id }}">
+                <td>{{item.id }}</td>
+
+                <td>{{item.Roll_No }}</td>
+
+                <td>{{item.Registration_number}}</td>
+                <td>{{ item.Name_of_the_Candidate }}</td>
+                <td>{{ item.Date_of_Exam}}</td>
+
+                <td><input type="text" name="internal1" class="editable field1" value="{{item.IS1}}"
+                        readonly></td>
+                        <td><input type="text" name="internal2" class="editable field2" value="{{item.IS2}}"
+                        readonly></td>
+                <td><input type="text" name="total_internal" class="editable field3" value="{{item.Internal_Assessment}}" readonly></td>
+                 <td class="status-column"></td>
+                <td ><button class="edit-button">Edit</button><button class="save-button" style="display: none;">Save</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table> -->
+
+<!-- {% if data and option|default_if_none:'' == 'practical_table' %}
+
+     <table id="practical_table" class="data-table" style="font-size: smaller; overflow-wrap: break-word; width: 96%; margin: 1px auto;white-space:wrap">
+        <thead>
+            <tr>
+                <th style="width:3%;">SI. No.</th>
+
+                <th style="width:10%;">Roll Number</th>
+
+                <th style="width:5%;">Registration Number</th>
+                <th style="width:8%;">Name of the Candidate</th>
+                <th style="width:5%;">Date of Exam</th>
+
+                <th>Practical</th>
+                <th>status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr>
+
+                <input type="hidden" name="id" value="{{item.id }}">
+                <td>{{item.id }}</td>
+
+                <td>{{item.Roll_No }}</td>
+
+                <td>{{item.Registration_number}}</td>
+                <td>{{ item.Name_of_the_Candidate }}</td>
+                <td>{{ item.Date_of_Exam}}</td>
+
+                <td><input type="text" name="practical" class="editable_practical field-practical" value="{{item.Practical1}}"
+                        readonly></td>
+
+                 <td class="status-column-practical"></td>
+                <td ><button class="edit-button-practical">Edit</button><button class="save-button-practical" style="display: none;">Save</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% if data and option|default_if_none:'' == 'assignment_table' %}
+
+<table id="assignment_table" class="data-table" style="font-size: smaller; overflow-wrap: break-word; width: 96%; margin: 1px auto;white-space:wrap">
+        <thead>
+            <tr>
+                <th style="width:3%;">SI. No.</th>
+
+                <th style="width:10%;">Roll Number</th>
+
+                <th style="width:5%;">Registration Number</th>
+                <th style="width:8%;">Name of the Candidate</th>
+                <th style="width:5%;">Date of Exam</th>
+
+                <th>Assignment/Project</th>
+                <th>status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr>
+
+                <input type="hidden" name="id" value="{{item.id }}">
+                <td>{{item.id }}</td>
+
+                <td>{{item.Roll_No }}</td>
+
+                <td>{{item.Registration_number}}</td>
+                <td>{{ item.Name_of_the_Candidate }}</td>
+                <td>{{ item.Date_of_Exam}}</td>
+
+                <td><input type="text" name="assignment" class="editable_assignment field-assignment" value="{{item.Project}}"
+                        readonly></td>
+
+                 <td class="status-column-Assignment"></td>
+                <td ><button class="edit-button-assignment">Edit</button><button class="save-button-assignment" style="display: none;">Save</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% endif %}
+ -->
+</body>
+
+</html>
