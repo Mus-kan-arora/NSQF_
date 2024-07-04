@@ -1,0 +1,14 @@
+<!--  {% extends 'basic_faculty.html' %} -->
+
+
+<!-- {% endblock %} -->
+{% extends "basic.html" %}
+   <h1>Welcome, {{ logged_in_user.username }}</h1>
+{% block content %}
+  <h1>Create Non-Staff User</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}
