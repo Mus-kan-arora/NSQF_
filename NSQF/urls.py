@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.urls import path,include
 from employee.views import *
 from faculty.views import *
+from django.conf import settings # new
+from  django.conf.urls.static import static #new
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('data/', save_data, name='save_data'),
@@ -26,3 +28,6 @@ urlpatterns = [
     path('faculty_save_practical/', faculty_save_practical_data, name='faculty_save_practical_data'),
     path('faculty_save_assignment/', faculty_save_assignment_data, name='faculty_save_practical_data'),
     ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_URL)
